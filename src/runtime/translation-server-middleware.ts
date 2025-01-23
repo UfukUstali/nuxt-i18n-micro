@@ -16,6 +16,7 @@ async function fetchTranslations(locale: string): Promise<Translations> {
 
 export const useTranslationServerMiddleware = async (event: H3Event, defaultLocale?: string, currentLocale?: string) => {
   const { getTranslation, loadTranslations, hasGeneralTranslation } = useTranslationHelper()
+  const config = useRuntimeConfig(event).i18nConfig
 
   const locale = (
     currentLocale
@@ -24,6 +25,7 @@ export const useTranslationServerMiddleware = async (event: H3Event, defaultLoca
     || getCookie(event, 'user-locale')
     || event.headers.get('accept-language')?.split(',')[0]
     || defaultLocale
+    || config.fallbackLocale
     || 'en').toString()
 
   if (!hasGeneralTranslation(locale)) {
